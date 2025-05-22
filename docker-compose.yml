@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  # PostgreSQL pour Airflow
+  postgres_airflow:
+    image: postgres:13
+    container_name: airflow_postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"  # ⬅️ port exposé pour te connecter depuis pgAdmin ou DBeaver
+    volumes:
+      - postgres_airflow_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+
+  # Airflow Webserver
+  airflow-webserver:
+    build: .
+    container_name: airflow_web
+    restart: no
+    depends_on:
+      - postgres_airflow
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data  # Pour stocker les fichiers téléchargés
+    ports:
+      - "8080:8080"
+    command: bash -c "airflow db init && airflow webserver"
+
+  # Airflow Scheduler
+  airflow-scheduler:
+    build: .
+    container_name: airflow_scheduler
+    restart: always
+    depends_on:
+      - airflow-webserver
+      - postgres_airflow
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+    command: scheduler
+
+  # MinIO pour simuler un data lake
+  minio:
+    image: minio/minio
+    container_name: taxi_weather_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_airflow_data:
+  minio_data:

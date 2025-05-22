@@ -1,0 +1,40 @@
+# === Python ===
+*.pyc
+__pycache__/
+.env
+*.log
+
+# === Data files ===
+*.duckdb
+*.db
+*.csv
+*.json
+*.zip
+*.tar
+*.parquet
+
+# === Jupyter & IDE ===
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
+
+# === DBT ===
+dbt_project/target/
+dbt_project/dbt_packages/
+
+# === Build/OS/Docker ===
+logs/
+*.sock
+*.pid
+
+# === Java JARs ===
+*.jar
+
+# === Extensions lourdes oubliées ===
+*.dll
+*.pyd
+*.so
+*.exe
+*.zip
+*.jar
+*.log

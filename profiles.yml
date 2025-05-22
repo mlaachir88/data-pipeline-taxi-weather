@@ -1,0 +1,6 @@
+dbt_project:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: C:/Users/Laachir/Desktop/ECOLE/MASTER1/4DATADEV/data-pipeline-taxi-weather/pipeline.duckdb
