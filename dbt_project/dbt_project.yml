@@ -6,5 +6,4 @@ profile: 'dbt_project'
 
 models:
   dbt_project:
-    dim_weather_parquet:
-      materialized: view
+    +materialized: table  # ✅ cette ligne applique la matérialisation à tous les modèles
