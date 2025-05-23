@@ -77,8 +77,8 @@ python generate_graphs.py
 
 Tous les graphiques sont sauvegardés dans outputs/graphs/
 
-🎓 Auteur
+🎓
 
-Mohamed LaachirMaster 1 Data EngineeringSUPINFO / 4DATADEV 2025
+Master 1 Data EngineeringSUPINFO / 4DATADEV 2025
 
 © Projet réalisé dans le cadre de l'évaluation finale du module Data Engineering.
